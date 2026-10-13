@@ -1,4 +1,3 @@
 ## Project Setup
-- Team Email: nexora2027@gmail.com
--pass:next4ora@2027
+- Team Email: nexora2027@gmail.comى
 - Developed by:NEXORA Team

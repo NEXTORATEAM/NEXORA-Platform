@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "axios": "^1.20.0",
+    "lucide-react": "^1.56.0"
+  },
+  "name": "nexora-platform",
+  "version": "1.0.0",
+  "description": "- Team Email: nexora2027@gmail.comى\r - Developed by:NEXORA Team",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NEXTORATEAM/NEXORA-Platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/NEXTORATEAM/NEXORA-Platform/issues"
+  },
+  "homepage": "https://github.com/NEXTORATEAM/NEXORA-Platform#readme"
+}
