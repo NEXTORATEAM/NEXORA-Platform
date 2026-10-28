@@ -1,4 +1,6 @@
 import React from 'react';
+// استيراد صورة الشعار من مجلد الـ assets (عدلي اسم الملف حسب المسمى لديكِ)
+import logoImage from '../assets/logo.png'; 
 
 const Navbar = () => {
   return (
@@ -6,9 +8,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-soft flex items-center justify-center font-bold text-brand-darker text-xl shadow-inner">
-            N
-          </div>
+          <img 
+            src={logoImage} 
+            alt="NEXORA Logo" 
+            className="w-10 h-10 object-contain rounded-xl" 
+          />
           <span className="text-xl font-extrabold tracking-wide text-white">
             NEXORA
           </span>

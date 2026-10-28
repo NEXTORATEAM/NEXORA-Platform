@@ -8,8 +8,8 @@ export default {
     extend: {
       colors: {
         brand: {
-          darker: '#021024',
-          dark: '#052659',
+          darker: '#0A2540', // درجة كحلي أنيقة وواضحة (بدل شديدة الظلمة)
+          dark: '#1E3A8A',   // درجة كحلي متوسطة وجذابة
           primary: '#5483B3',
           light: '#7DA0CA',
           soft: '#C1E8FF',
