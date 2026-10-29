@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 1. استيراد useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 export default function Register() {
-  const navigate = useNavigate(); // 2. تفعيل التوجيه
+  const navigate = useNavigate();
   const [userType, setUserType] = useState('student'); // 'student' or 'recruiter'
   const [formData, setFormData] = useState({
     name: '',
@@ -20,30 +20,30 @@ export default function Register() {
     if (errorMessage) setErrorMessage('');
   };
 
-  const handleSubmit = (e) => {
+  // دالة التعامل مع التسجيل والتوجيه المباشر
+  const handleRegisterClick = (e) => {
     e.preventDefault();
     
+    if (!formData.name || !formData.email || !formData.password) {
+      setErrorMessage('يرجى ملء كافة الحقول المطلوبة.');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setErrorMessage('كلمتا المرور غير متطابقتان. يرجى التحقق مرة أخرى.');
       return;
     }
 
-    if (formData.password.length < 6) {
-      setErrorMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل.');
-      return;
-    }
+    setErrorMessage('');
+    console.log('Registering as:', userType);
 
-    console.log('Register submitted successfully:', { userType, ...formData });
-
-    // 3. التوجيه بناءً على نوع المستخدم المسجل
-    if (userType === 'student') {
-      navigate('/candidate/dashboard'); // لوحة طالب العمل
+    // التوجيه الفوري المباشر حسب نوع المستخدم
+    if (userType === 'recruiter') {
+      navigate('/recruiter/add-job');
     } else {
-      navigate('/recruiter/add-job'); // لوحة الشركة
+      navigate('/candidate/dashboard');
     }
   };
-
-  // ... باقي كود الصفحة ...
 
   return (
     <div className="py-12 px-4 flex items-center justify-center bg-slate-50 flex-grow" dir="rtl">
@@ -55,7 +55,7 @@ export default function Register() {
           <p className="text-sm text-slate-500">اختر نوع الحساب وابدأ رحلتك الذكية معنا</p>
         </div>
 
-        {/* تنبيه الخطأ في حال وجود مشكلة */}
+        {/* تنبيه الخطأ */}
         {errorMessage && (
           <div className="bg-red-50 border border-red-200 text-red-600 text-xs p-3 rounded-xl text-center font-medium">
             {errorMessage}
@@ -89,7 +89,7 @@ export default function Register() {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleRegisterClick} className="space-y-4">
           <Input
             label={userType === 'student' ? 'الاسم الكامل' : 'اسم الشركة / المسؤول'}
             type="text"
@@ -131,7 +131,7 @@ export default function Register() {
           />
 
           <Button type="submit" variant="primary" className="w-full py-2.5">
-            {userType === 'student' ? 'إنشاء حساب ' : 'إنشاء حساب شركة'}
+            {userType === 'student' ? 'إنشاء حساب' : 'إنشاء حساب شركة'}
           </Button>
         </form>
 
