@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // 1. استيراد useNavigate
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 export default function Register() {
+  const navigate = useNavigate(); // 2. تفعيل التوجيه
   const [userType, setUserType] = useState('student'); // 'student' or 'recruiter'
   const [formData, setFormData] = useState({
     name: '',
@@ -10,24 +12,55 @@ export default function Register() {
     password: '',
     confirmPassword: ''
   });
+  
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errorMessage) setErrorMessage('');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Register submitted:', { userType, ...formData });
+    
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage('كلمتا المرور غير متطابقتان. يرجى التحقق مرة أخرى.');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setErrorMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل.');
+      return;
+    }
+
+    console.log('Register submitted successfully:', { userType, ...formData });
+
+    // 3. التوجيه بناءً على نوع المستخدم المسجل
+    if (userType === 'student') {
+      navigate('/candidate/dashboard'); // لوحة طالب العمل
+    } else {
+      navigate('/recruiter/add-job'); // لوحة الشركة
+    }
   };
 
+  // ... باقي كود الصفحة ...
+
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12" dir="rtl">
+    <div className="py-12 px-4 flex items-center justify-center bg-slate-50 flex-grow" dir="rtl">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-slate-100 p-8 space-y-6">
+        
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold text-brand-darker font-tajawal">إنشاء حساب جديد في NEXORA</h1>
           <p className="text-sm text-slate-500">اختر نوع الحساب وابدأ رحلتك الذكية معنا</p>
         </div>
+
+        {/* تنبيه الخطأ في حال وجود مشكلة */}
+        {errorMessage && (
+          <div className="bg-red-50 border border-red-200 text-red-600 text-xs p-3 rounded-xl text-center font-medium">
+            {errorMessage}
+          </div>
+        )}
 
         {/* Role Selection Tabs */}
         <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
@@ -40,7 +73,7 @@ export default function Register() {
                 : 'text-slate-500 hover:text-slate-700'
             }`}
           >
-            باحث عن عمل / طالب
+            باحث عن عمل  
           </button>
           <button
             type="button"
@@ -98,16 +131,16 @@ export default function Register() {
           />
 
           <Button type="submit" variant="primary" className="w-full py-2.5">
-            {userType === 'student' ? 'إنشاء حساب طالب' : 'إنشاء حساب شركة'}
+            {userType === 'student' ? 'إنشاء حساب ' : 'إنشاء حساب شركة'}
           </Button>
         </form>
 
         {/* Footer Link */}
         <div className="text-center text-sm text-slate-500 pt-4 border-t border-slate-100">
           لديك حساب بالفعل؟{' '}
-          <a href="/login" className="text-brand-primary font-bold hover:underline">
+          <Link to="/login" className="text-brand-primary font-bold hover:underline">
             تسجيل الدخول
-          </a>
+          </Link>
         </div>
       </div>
     </div>
