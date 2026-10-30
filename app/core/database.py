@@ -1,7 +1,5 @@
 from sqlalchemy import create_engine
-import os
+from app.core.config import settings
 
-# رابط الاتصال بقاعدة البيانات محلياً على بورت 5435
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:@localhost:5435/nexora_db")
-
-engine = create_engine(DATABASE_URL)
+# استخدام رابط الإعدادات الذي يحتوي على psycopg2 المعتمد
+engine = create_engine(settings.DATABASE_URL)
