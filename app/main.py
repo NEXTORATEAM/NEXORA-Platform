@@ -4,6 +4,7 @@ from app.core.config import settings
 from app.db.base import Base
 from app.core.database import engine
 from app.api.v1.router import api_router
+from app.api.v1.endpoints import health, upload
 
 # إنشاء الجداول في PostgreSQL تلقائياً
 Base.metadata.create_all(bind=engine)
@@ -23,9 +24,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# تضمين مسارات API v1
-app.include_router(api_router, prefix=settings.API_V1_STR)
-
+# الجذر الأساسي للسيرفر
 @app.get("/")
 def root():
     return {"message": "Welcome to NEXORA Backend System"}
+
+# تضمين المسارات الرئيسية عبر الـ api_router والمسارات المباشرة لـ Sprint 1
+app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(health.router, prefix="/api/v1")
+app.include_router(upload.router, prefix="/api/v1")
