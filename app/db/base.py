@@ -1,4 +1,4 @@
-from app.db.base_class import Base  # أو من المكان الرئيسي لـ Base عندكِ
+from app.core.database import Base
 from app.db.models.user import User
 from app.db.models.resume import Resume
 from app.db.models.job_post import JobPost
