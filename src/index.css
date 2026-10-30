@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@theme {
+  --color-brand-darker: #0A2540;
+  --color-brand-dark: #1E3A8A;
+  --color-brand-primary: #5483B3;
+  --color-brand-light: #7DA0CA;
+  --color-brand-soft: #C1E8FF;
+}
+
+body {
+  font-family: 'Tajawal', system-ui, sans-serif;
+  background-color: #F8FAFC;
+  direction: rtl;
+}
+
