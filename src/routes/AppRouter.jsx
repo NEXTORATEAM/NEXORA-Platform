@@ -1,25 +1,20 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+<div className="min-h-screen flex flex-col bg-slate-900 text-slate-100" dir="rtl"></div>
 
 // المكونات الثابتة
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-// صفحات المصادقة
+// صفحات المصادقة الخاصة بكِ
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
 
-// صفحات لوحة الشركات والتوظيف (Recruiter)
+// صفحات لوحة الشركات والتوظيف الخاصة بكِ (Recruiter)
 import JobPost from '../pages/Recruiter/JobPost';
 import Applicants from '../pages/Recruiter/Applicants';
 import MarketRadar from '../pages/Recruiter/MarketRadar';
-
-// صفحات المتقدمين والطلاب (Candidate)
-import LandingPage from '../pages/Candidate/LandingPage';
-import UploadCVPage from '../pages/Candidate/UploadCVPage';
-import Dashboard from '../pages/Candidate/Dashboard';
-import SkillGap from '../pages/Candidate/SkillGap';
-import AIOutputs from '../pages/Candidate/AIOutputs';
+import BatchUpload from '../pages/Recruiter/BatchUpload';
 
 export default function AppRouter() {
   return (
@@ -31,28 +26,20 @@ export default function AppRouter() {
         {/* محتوى الصفحات المتغير */}
         <main className="flex-grow">
           <Routes>
-            {/* أول ما تفتح المنصة تحولك تلقائياً لصفحة تسجيل الدخول */}
+            {/* أول ما تفتح المنصة تحولك فوراً وبدون تردد لصفحة تسجيل الدخول */}
             <Route path="/" element={<Navigate to="/login" replace />} />
 
-            {/* مسارات المصادقة */}
+            {/* مسارات المصادقة (التسجيل ودخول النظام) */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
-            {/* صفحة الهبوط العامة */}
-            <Route path="/landing" element={<LandingPage />} />
 
             {/* مسارات لوحة الشركات (Recruiter) */}
             <Route path="/recruiter/add-job" element={<JobPost />} />
             <Route path="/recruiter/applicants" element={<Applicants />} />
             <Route path="/recruiter/market-radar" element={<MarketRadar />} />
+            <Route path="/recruiter/batch-upload" element={<BatchUpload />} />
 
-            {/* مسارات لوحة الطلاب والباحثين (Candidate) */}
-            <Route path="/candidate/dashboard" element={<Dashboard />} />
-            <Route path="/candidate/upload-cv" element={<UploadCVPage />} />
-            <Route path="/candidate/skill-gap" element={<SkillGap />} />
-            <Route path="/candidate/ai-outputs" element={<AIOutputs />} />
-
-            {/* صفحة خطأ 404 لأي مسار آخر */}
+            {/* صفحة خطأ 404 لأي مسار غير معروف */}
             <Route path="*" element={<div className="text-center py-20 text-xl font-bold text-slate-600">404 - الصفحة غير موجودة</div>} />
           </Routes>
         </main>
