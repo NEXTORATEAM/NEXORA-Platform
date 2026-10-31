@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+
+
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from datetime import datetime
-from app.core.database import Base
+from app.db.base import Base
 
 class Resume(Base):
     __tablename__ = "resumes"
@@ -8,7 +10,5 @@ class Resume(Base):
     id = Column(Integer, primary_key=True, index=True)
     filename = Column(String, nullable=False)
     file_path = Column(String, nullable=False)
-    uploaded_at = Column(DateTime, default=datetime.utcnow)
-    
-    # ربط السيرة الذاتية بالمستخدم صاحب الحساب
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    upload_date = Column(DateTime, default=datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
