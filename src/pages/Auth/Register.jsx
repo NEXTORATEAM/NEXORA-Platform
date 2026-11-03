@@ -5,106 +5,97 @@ import Button from '../../components/Button';
 
 export default function Register() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState('student'); // 'student' or 'recruiter'
+  
+  // حالات النموذج (Form States)
+  const [userType, setUserType] = useState('student'); // 'student' أو 'recruiter'
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-  
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
+  // تحديث القيم عند الكتابة
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errorMessage) setErrorMessage('');
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
-  // دالة التعامل مع التسجيل والربط مع قاعدة البيانات
+  // دالة إرسال البيانات للـ Backend (الربط مع FastAPI)
   const handleRegisterClick = async (e) => {
     e.preventDefault();
-    
-    if (!formData.name || !formData.email || !formData.password) {
-      setErrorMessage('يرجى ملء كافة الحقول المطلوبة.');
-      return;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage('كلمتا المرور غير متطابقتان. يرجى التحقق مرة أخرى.');
-      return;
-    }
-
     setErrorMessage('');
+
+    // التحقق من تطابق كلمات المرور
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage('كلمتا المرور غير متطابقتين');
+      return;
+    }
+
     setIsLoading(true);
 
-    /* 
-      ===============================================================
-      🔗 مكان الربط مع الـ Backend (FastAPI / PostgreSQL or MySQL)
-      ===============================================================
-      عند الاجتماع والبدء بالربط، يتم إلغاء التعليق عن الكود التالي:
+    try {
+      const response = await fetch('http://10.207.192.164:8000/api/v1/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,       // الاسم المدخل
+          email: formData.email,     // البريد الإلكتروني
+          password: formData.password, // كلمة المرور
+          role: userType             // نوع المستخدم ('student' أو 'recruiter')
+        }),
+      });
 
-      try {
-        const response = await fetch('http://localhost:8000/api/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            full_name: formData.name,
-            email: formData.email,
-            password: formData.password,
-            role: userType // 'student' or 'recruiter'
-          }),
-        });
+      const data = await response.json();
+      
+      // طباعة الرد في الـ Console لنتمكن من رؤية محتواه بدقة
+      console.log("Response Data:", data);
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'حدث خطأ أثناء إنشاء الحساب');
-        }
-
-        // حفظ الـ Token والبيانات في localStorage عند نجاح التسجيل
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userRole', userType);
-
-        // التوجيه الفوري المباشر حسب نوع المستخدم
-        if (userType === 'recruiter') {
-          navigate('/recruiter/add-job');
-        } else {
-          navigate('/candidate/dashboard');
-        }
-      } catch (err) {
-        setErrorMessage(err.message || 'فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً.');
-      } finally {
-        setIsLoading(false);
+      if (!response.ok) {
+        const errorMsg = typeof data.detail === 'string' ? data.detail : 'حدث خطأ أثناء إنشاء الحساب';
+        throw new Error(errorMsg);
       }
-    */
 
-    // مؤقتاً لحين ربط الـ Backend: محاكاة التسجيل والتوجيه
-    setTimeout(() => {
-      setIsLoading(false);
+      // حفظ الـ Token أو بيانات المستخدم إذا أرجعه الباك إند مباشرة
+      if (data.access_token) {
+        localStorage.setItem('token', data.access_token);
+      }
+      localStorage.setItem('userRole', userType);
+
+      // التوجيه الفوري حسب نوع المستخدم
       if (userType === 'recruiter') {
         navigate('/recruiter/add-job');
       } else {
         navigate('/candidate/dashboard');
       }
-    }, 1000);
+
+    } catch (err) {
+      setErrorMessage(err.message || 'فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="py-12 px-4 flex items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex-grow font-tajawal transition-colors duration-300" dir="rtl">
-      <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 space-y-6 transition-colors duration-300">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
+      <div className="max-w-md w-full bg-white dark:bg-slate-900 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 space-y-6">
         
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white font-tajawal">إنشاء حساب جديد في NEXORA</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400">اختر نوع الحساب وابدأ رحلتك الذكية معنا</p>
+        {/* Title */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">إنشاء حساب جديد في NEXORA</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">اختر نوع الحساب وادخل بياناتك للبدء</p>
         </div>
 
-        {/* تنبيه الخطأ */}
+        {/* عرض رسالة الخطأ إن وجدت */}
         {errorMessage && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs p-3 rounded-xl text-center font-medium">
+          <div className="p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm rounded-lg text-center">
             {errorMessage}
           </div>
         )}
