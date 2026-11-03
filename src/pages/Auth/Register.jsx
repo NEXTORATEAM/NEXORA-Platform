@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // 1. استيراد useNavigate
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { registerUser } from '../../services/authService';
 
 export default function Register() {
   const navigate = useNavigate(); // 2. تفعيل التوجيه
@@ -16,32 +17,65 @@ export default function Register() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errorMessage) setErrorMessage('');
-  };
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage('كلمتا المرور غير متطابقتان. يرجى التحقق مرة أخرى.');
-      return;
-    }
+  if (errorMessage) {
+    setErrorMessage('');
+  }
+};
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (formData.password.length < 6) {
-      setErrorMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل.');
-      return;
-    }
+  // التحقق من تطابق كلمتي المرور
+  if (formData.password !== formData.confirmPassword) {
+    setErrorMessage('كلمتا المرور غير متطابقتين');
+    return;
+  }
 
-    console.log('Register submitted successfully:', { userType, ...formData });
+  // التحقق من طول كلمة المرور
+  if (formData.password.length < 6) {
+    setErrorMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+    return;
+  }
 
-    // 3. التوجيه بناءً على نوع المستخدم المسجل
+  try {
+    setErrorMessage('');
+
+    // تحويل نوع الحساب إلى القيمة التي يفهمها Backend
+    const role = userType === 'student' ? 'candidate' : 'recruiter';
+
+    // تجهيز البيانات المطلوبة من Backend
+    const userData = {
+      email: formData.email,
+      password: formData.password,
+      role: role
+    };
+
+    // إرسال طلب إنشاء الحساب
+    const response = await registerUser(userData);
+
+    console.log('Registration successful:', response);
+
+    // الانتقال بعد نجاح إنشاء الحساب
     if (userType === 'student') {
-      navigate('/candidate/dashboard'); // لوحة طالب العمل
+      navigate('/candidate/dashboard');
     } else {
-      navigate('/recruiter/add-job'); // لوحة الشركة
+      navigate('/recruiter/add-job');
     }
-  };
+
+  } catch (error) {
+    console.error('Registration error:', error);
+
+    const message = error.response?.data?.detail;
+
+    setErrorMessage(
+      message || 'حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى'
+    );
+  }
+};
 
   // ... باقي كود الصفحة ...
 
