@@ -1,6 +1,5 @@
-
 from fastapi import APIRouter
-from app.api.v1.endpoints import analytics, auth
+from app.api.v1.endpoints import analytics, auth, recruiters
 
 api_router = APIRouter()
 
@@ -9,8 +8,11 @@ api_router = APIRouter()
 def health_check():
     return {"status": "healthy", "version": "1.0.0"}
 
-# مسارات المصادقة وتسيجل الدخول
+# مسارات المصادقة وتسجيل الدخول
 api_router.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 
 # مسارات التحليل وحفظ بيانات السيرة الذاتية
 api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytics & Resume Analysis"])
+
+# مسارات التوظيف ولوحة الشركات
+api_router.include_router(recruiters.router, prefix="/recruiter", tags=["Recruiter Dashboard"])

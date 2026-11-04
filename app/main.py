@@ -5,7 +5,6 @@ from app.db.base import Base
 from app.core.database import engine
 from app.api.v1.router import api_router
 from app.api.v1.endpoints import health, upload
-from app.db.session import engine
 
 # إنشاء الجداول في PostgreSQL تلقائياً
 Base.metadata.create_all(bind=engine)
@@ -37,6 +36,3 @@ def root():
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(health.router, prefix="/api/v1")
 app.include_router(upload.router, prefix="/api/v1")
-
-
-
