@@ -25,6 +25,7 @@ class UserCreate(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    role: str
 
 # مسار إنشاء حساب جديد (Register)
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -79,4 +80,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         data={"sub": user.email}, expires_delta=access_token_expires
     )
     
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+    "access_token": access_token,
+    "token_type": "bearer",
+    "role": user.role
+}

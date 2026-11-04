@@ -11,7 +11,6 @@
 
 body {
   font-family: 'Tajawal', system-ui, sans-serif;
-  background-color: #F8FAFC;
+  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300;
   direction: rtl;
 }
-
