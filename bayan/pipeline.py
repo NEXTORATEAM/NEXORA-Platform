@@ -1,6 +1,7 @@
-from Parsers.pdf_parser import extract_text_from_pdf
-from Parsers.docx_parser import extract_text_from_docx
-from nlp.ner_extractor import extract_resume_entities
+from bayan.pdf_parser import extract_text_from_pdf
+from bayan.docx_parser import extract_text_from_docx
+from bayan.ner_extractor import extract_resume_entities
+
 def process_resume(file_path: str) -> dict:
     """
     دالة الدمج الشاملة في منصة NEXORA:
@@ -38,7 +39,6 @@ def process_resume(file_path: str) -> dict:
 
 # مثال تجريبي للاختبار المباشر للسلسلة الكاملة
 if __name__ == "__main__":
-    # مسار تجريبي لملف وورد أو بي دي إف لديكِ
     sample_path = "data/sample_cvs/Azhar_Raji_CV_Updated.docx"
     
     final_output = process_resume(sample_path)

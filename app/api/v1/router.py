@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, analytics, batch
+from app.api.v1.endpoints import auth, users, analytics, batch, recommendations
 
 api_router = APIRouter()
 
@@ -19,3 +19,6 @@ api_router.include_router(analytics.router, prefix="/analytics", tags=["Analytic
 
 # مسارات الرفع الجماعي والمعالجة
 api_router.include_router(batch.router, prefix="/batch", tags=["Bulk Processing"])
+
+# مسارات التوصيات وخدمات الذكاء الاصطناعي
+api_router.include_router(recommendations.router, prefix="/recommendations", tags=["Recommendations & AI Services"])
