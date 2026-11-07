@@ -1,6 +1,8 @@
-from Parsers.pdf_parser import extract_text_from_pdf
-from Parsers.docx_parser import extract_text_from_docx
-from nlp.ner_extractor import extract_resume_entities
+from ai_engine.parsers.pdf_parser import extract_text_from_pdf
+from ai_engine.parsers.docx_parser import extract_text_from_docx
+from ai_engine.nlp.ner_extractor import extract_resume_entities
+
+
 def process_resume(file_path: str) -> dict:
     """
     دالة الدمج الشاملة في منصة NEXORA:
