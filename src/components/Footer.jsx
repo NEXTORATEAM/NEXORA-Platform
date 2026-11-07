@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-brand-darker text-brand-soft font-tajawal border-t border-brand-dark mt-auto" dir="rtl">
+    <footer
+      className="bg-brand-darker text-brand-soft font-tajawal border-t border-brand-dark mt-auto"
+      dir="rtl"
+    >
       <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+
         {/* حقوق النشر والتطوير */}
         <div className="text-center md:text-right">
           <p className="text-xs md:text-sm text-slate-300">
@@ -12,17 +16,30 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* روابط الـ Footer التفاعلية */}
+        {/* روابط Footer */}
         <div className="flex flex-wrap justify-center items-center gap-6 text-xs text-brand-light">
-          <Link to="/privacy" className="hover:text-white transition-colors">
+
+          <Link
+            to="/privacy-policy"
+            className="hover:text-white transition-colors"
+          >
             سياسة الخصوصية
           </Link>
-          <Link to="/terms" className="hover:text-white transition-colors">
+
+          <Link
+            to="/terms"
+            className="hover:text-white transition-colors"
+          >
             شروط الاستخدام
           </Link>
-          <a href="#support" className="hover:text-white transition-colors">
+
+          <Link
+            to="/support"
+            className="hover:text-white transition-colors"
+          >
             الدعم الفني
-          </a>
+          </Link>
+
         </div>
       </div>
     </footer>

@@ -14,7 +14,7 @@ import Footer from '../components/Footer';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
 
-// صفحات ربا: مسؤول التوظيف
+// صفحات مسؤول التوظيف
 import JobPost from '../pages/Recruiter/JobPost';
 import Applicants from '../pages/Recruiter/Applicants';
 import MarketRadar from '../pages/Recruiter/MarketRadar';
@@ -27,6 +27,13 @@ import Dashboard from '../pages/Candidate/Dashboard';
 import SkillGap from '../pages/Candidate/SkillGap';
 import AIOutputs from '../pages/Candidate/AIOutputs';
 import Recommendations from '../pages/Candidate/Recommendations';
+
+// الصفحات العامة
+import TermsOfUse from '../pages/General/TermsOfUse';
+import PrivacyPolicy from '../pages/General/PrivacyPolicy';
+import TechnicalSupport from '../pages/General/TechnicalSupport';
+import Help from '../pages/General/Help';
+import Settings from '../pages/General/Settings';
 
 export default function AppRouter() {
   return (
@@ -43,7 +50,7 @@ export default function AppRouter() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* صفحات ربا: مسؤول التوظيف */}
+            {/* صفحات مسؤول التوظيف */}
             <Route path="/recruiter/add-job" element={<JobPost />} />
             <Route path="/recruiter/applicants" element={<Applicants />} />
             <Route path="/recruiter/market-radar" element={<MarketRadar />} />
@@ -59,6 +66,13 @@ export default function AppRouter() {
               path="/candidate/recommendations"
               element={<Recommendations />}
             />
+
+            {/* الصفحات العامة */}
+            <Route path="/terms" element={<TermsOfUse />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/support" element={<TechnicalSupport />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/settings" element={<Settings />} />
 
             {/* صفحة غير موجودة */}
             <Route
