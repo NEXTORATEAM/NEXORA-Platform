@@ -8,7 +8,7 @@ class Settings:
     # إعدادات قاعدة البيانات المحلية مع تحديد درايفر psycopg2 صراحة
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL", 
-        "postgresql+psycopg2://postgres:nexora2027@localhost:5432/nexora_db"
+        "postgresql+psycopg2://postgres:@localhost:5435/nexora_db"
     )
 
 settings = Settings()

@@ -14,6 +14,7 @@ class ScreeningBatch(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     recruiter_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    job_id = Column(Integer, ForeignKey("jobs.id"), nullable=True)
     zip_filename = Column(String(255), nullable=False)
     total_files = Column(Integer, default=0)
     status = Column(Enum(BatchStatus), default=BatchStatus.PENDING)

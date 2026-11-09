@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // 1. استيراد useNavigate
+import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import { registerUser } from '../../services/authService';
 
 export default function Register() {
-  const navigate = useNavigate(); // 2. تفعيل التوجيه
+  const navigate = useNavigate();
   const [userType, setUserType] = useState('student'); // 'student' or 'recruiter'
   const [formData, setFormData] = useState({
     name: '',
@@ -15,69 +15,85 @@ export default function Register() {
   });
   
   const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-  setFormData({
-    ...formData,
-    [e.target.name]: e.target.value
-  });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
 
-  if (errorMessage) {
-    setErrorMessage('');
-  }
-};
+    if (errorMessage) {
+      setErrorMessage('');
+    }
+  };
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // التحقق من تطابق كلمتي المرور
-  if (formData.password !== formData.confirmPassword) {
-    setErrorMessage('كلمتا المرور غير متطابقتين');
-    return;
-  }
-
-  // التحقق من طول كلمة المرور
-  if (formData.password.length < 6) {
-    setErrorMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
-    return;
-  }
-
-  try {
-    setErrorMessage('');
-
-    // تحويل نوع الحساب إلى القيمة التي يفهمها Backend
-    const role = userType === 'student' ? 'candidate' : 'recruiter';
-
-    // تجهيز البيانات المطلوبة من Backend
-    const userData = {
-      email: formData.email,
-      password: formData.password,
-      role: role
-    };
-
-    // إرسال طلب إنشاء الحساب
-    const response = await registerUser(userData);
-
-    console.log('Registration successful:', response);
-
-    // الانتقال بعد نجاح إنشاء الحساب
-    if (userType === 'student') {
-      navigate('/candidate/dashboard');
-    } else {
-      navigate('/recruiter/add-job');
+    // التحقق من إدخال الاسم
+    if (!formData.name.trim()) {
+      setErrorMessage('يرجى إدخال الاسم الكامل');
+      return;
     }
 
-  } catch (error) {
-    console.error('Registration error:', error);
+    // التحقق من تطابق كلمتي المرور
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage('كلمتا المرور غير متطابقتين');
+      return;
+    }
 
-    const message = error.response?.data?.detail;
+    // التحقق من طول كلمة المرور
+    if (formData.password.length < 6) {
+      setErrorMessage('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+      return;
+    }
 
-    setErrorMessage(
-      message || 'حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى'
-    );
-  }
-};
+    try {
+      setErrorMessage('');
+      setLoading(true);
 
-  // ... باقي كود الصفحة ...
+      // تحويل نوع الحساب إلى القيمة التي يفهمها Backend
+      const role = userType === 'student' ? 'candidate' : 'recruiter';
+
+      // تجهيز البيانات وإرسال name للـ Backend
+      const userData = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        role: role
+      };
+
+      // إرسال طلب إنشاء الحساب
+      const response = await registerUser(userData);
+
+      console.log('Registration successful:', response);
+
+      // الانتقال بعد نجاح إنشاء الحساب
+      if (userType === 'student') {
+        navigate('/candidate/dashboard');
+      } else {
+        navigate('/recruiter/add-job');
+      }
+
+    } catch (error) {
+      console.error('Registration error:', error);
+
+      // معالجة الأخطاء بأمان لمنع انهيار الواجهة
+      let message = error.response?.data?.detail;
+      if (Array.isArray(message)) {
+        message = message.map((item) => item.msg || 'خطأ في المدخلات').join(' - ');
+      } else if (typeof message === 'object' && message !== null) {
+        message = JSON.stringify(message);
+      }
+
+      setErrorMessage(
+        message || 'حدث خطأ أثناء إنشاء الحساب، حاول مرة أخرى'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="py-12 px-4 flex items-center justify-center bg-slate-50 flex-grow" dir="rtl">
@@ -164,8 +180,8 @@ export default function Register() {
             required
           />
 
-          <Button type="submit" variant="primary" className="w-full py-2.5">
-            {userType === 'student' ? 'إنشاء حساب ' : 'إنشاء حساب شركة'}
+          <Button type="submit" variant="primary" className="w-full py-2.5" disabled={loading}>
+            {loading ? 'جاري إنشاء الحساب...' : (userType === 'student' ? 'إنشاء حساب' : 'إنشاء حساب شركة')}
           </Button>
         </form>
 

@@ -1,30 +1,40 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from pydantic import BaseModel, EmailStr
+
 from app.db.session import get_db
 from app.db.models.user import User
 from app.core.security import get_password_hash, verify_password, create_access_token
-from pydantic import BaseModel, EmailStr
 
 router = APIRouter()
 
+
 class UserCreate(BaseModel):
+    name: Optional[str] = None
     email: EmailStr
     password: str
     role: str = "candidate"
+
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
-    # التحقق مما إذا كان البريد مسجلاً مسبقاً
     existing_user = db.query(User).filter(User.email == user_data.email).first()
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
     
     hashed_pass = get_password_hash(user_data.password)
+    
     new_user = User(
+        name=user_data.name,
         email=user_data.email,
         hashed_password=hashed_pass,
         role=user_data.role
@@ -34,7 +44,12 @@ def register_user(user_data: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     
-    return {"message": "User registered successfully", "user_id": new_user.id}
+    return {
+        "message": "User registered successfully",
+        "user_id": new_user.id,
+        "name": new_user.name
+    }
+
 
 @router.post("/login")
 def login_user(user_data: UserLogin, db: Session = Depends(get_db)):
@@ -46,6 +61,5 @@ def login_user(user_data: UserLogin, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # إصدار JWT Token
     access_token = create_access_token(data={"sub": user.email, "role": user.role})
     return {"access_token": access_token, "token_type": "bearer"}
