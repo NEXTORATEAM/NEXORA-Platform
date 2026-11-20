@@ -9,7 +9,6 @@ if src_dir not in sys.path:
 
 import chromadb
 from ai_engine.nlp.embedder import ResumeEmbedder
-
 class NEXORAVectorStore:
     """
     إدارة قاعدة البيانات المتجهية (ChromaDB) لمنصة NEXORA:
@@ -68,5 +67,5 @@ if __name__ == "__main__":
     job_desc = "Looking for an Artificial Intelligence specialist with Python and Machine Learning experience."
     search_results = vector_store.search_matching_resumes(job_desc, top_k=1)
     
-    print("--- نتائج البحث الدلالي من ChromaDB ---")
+    print("--- semantic search results from ChromaDB ---")
     print(search_results)

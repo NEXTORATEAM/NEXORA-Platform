@@ -52,5 +52,5 @@ if __name__ == "__main__":
     # حساب نسبة التطابق
     score = embedder.calculate_similarity(resume_emb, job_emb)
     
-    print(f"طول المتجه الناتج: {len(resume_emb)}")
-    print(f"نسبة التطابق الدلالي (Match Score): {score * 100:.2f}%")
+    print(f"Output Vector Length: {len(resume_emb)}")
+    print(f"Semantic Match Scores: {score * 100:.2f}%")

@@ -7,7 +7,7 @@ def extract_text_from_docx(file_path: str) -> dict:
     باستخدام مكتبة python-docx.
     """
     if not os.path.exists(file_path):
-        return {"success": False, "error": "الملف غير موجود في المسار المحدد."}
+        return {"success": False, "error": "The file does not exist at the specified path."}
     
     extracted_text = ""
     paragraphs_count = 0
@@ -36,7 +36,7 @@ def extract_text_from_docx(file_path: str) -> dict:
     except Exception as e:
         return {
             "success": False,
-            "error": f"حدث خطأ أثناء قراءة ملف الـ Word: {str(e)}"
+            "error": f"Error occurred while reading the Word file: {str(e)}"
         }
 
 # مثال تجريبي للاختبار المباشر

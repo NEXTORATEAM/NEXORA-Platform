@@ -1,32 +1,40 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import analytics, auth, recruiters, upload
+from app.api.v1.endpoints import analytics, auth, recruiters, resume, upload
 
 api_router = APIRouter()
+
 
 @api_router.get("/health-check")
 def health_check():
     return {"status": "healthy", "version": "1.0.0"}
 
+
 api_router.include_router(
     auth.router,
     prefix="/auth",
-    tags=["Authentication"]
+    tags=["Authentication"],
 )
 
 api_router.include_router(
     analytics.router,
     prefix="/analytics",
-    tags=["Analytics & Resume Analysis"]
+    tags=["Analytics & Resume Analysis"],
 )
 
 api_router.include_router(
     recruiters.router,
     prefix="/recruiter",
-    tags=["Recruiter Dashboard"]
+    tags=["Recruiter Dashboard"],
 )
 
 api_router.include_router(
     upload.router,
     prefix="/candidate",
-    tags=["Candidate Upload"]
+    tags=["Candidate Upload"],
+)
+
+api_router.include_router(
+    resume.router,
+    prefix="/resume",
+    tags=["Resume & Gap Analysis"],
 )

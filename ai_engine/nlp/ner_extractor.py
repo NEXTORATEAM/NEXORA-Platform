@@ -2,72 +2,36 @@ import os
 import json
 import re
 import spacy
-from spacy.pipeline import EntityRuler
 
-def load_skills_from_directory() -> list:
+def normalize_text(text: str) -> str:
     """
-    قراءة المهارات ديناميكياً من مجلد skill_dictionaries (سواء كانت ملفات txt أو json).
+    تطبيع النصوص العامة (عربي وإنجليزي) لتوحيد المسافات والأحرف وإزالة التشكيل.
     """
-    skills = []
-    # تجربة مسارات متعددة للوصول للمجلد بحسب مكان التشغيل
-    possible_paths = [
-        "data/skill_dictionaries",
-        "../../data/skill_dictionaries",
-        "../data/skill_dictionaries"
-    ]
-    
-    dict_dir = None
-    for path in possible_paths:
-        if os.path.exists(path):
-            dict_dir = path
-            break
-
-    if dict_dir:
-        for filename in os.listdir(dict_dir):
-            file_path = os.path.join(dict_dir, filename)
-            try:
-                if filename.endswith(".txt"):
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        for line in f:
-                            skill = line.strip()
-                            if skill and not skill.startswith("#"):
-                                skills.append(skill)
-                elif filename.endswith(".json"):
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        data = json.load(f)
-                        if isinstance(data, list):
-                            skills.extend([str(s).strip() for s in data if str(s).strip()])
-            except Exception as e:
-                print(f"تحذير: لم نستطع قراءة الملف {filename}: {e}")
-
-    # مهارات افتراضية احتياطية في حال كان المجلد فارغاً أو غير موجود
-    if not skills:
-        skills = [
-            "Python", "FastAPI", "Flask", "React", "TailwindCSS", "Node.js",
-            "SQL", "PostgreSQL", "MySQL", "ChromaDB", "MongoDB", "SQLite",
-            "Machine Learning", "Deep Learning", "spaCy", "Pandas", "NumPy",
-            "Scikit-learn", "PyTorch", "Transformers", "Docker", "Git", "Tableau", "Power BI", "LangChain"
-        ]
-    
-    return list(set(skills))
+    if not text:
+        return ""
+    # إزالة تشكيل الحروف العربية
+    text = re.sub(r'[\u064b-\u0652]', '', text)
+    # توحيد المسافات الزائدة
+    text = re.sub(r'\s+', ' ', text)
+    return text.strip()
 
 def extract_degrees(text: str) -> list:
     """
-    استخراج الدرجات العلمية والمؤهلات الأكاديمية بدقة باستخدام أنماط البحث (Regex).
+    استخراج الدرجات العلمية والمؤهلات بمختلف التخصصات (إدارة أعمال، هندسة، تقنية، طب...).
     """
     degree_patterns = [
+        # إنجليزي
         r"Bachelor(?:\s+of\s+[A-Za-z\s]+)?",
         r"Master(?:\s+of\s+[A-Za-z\s]+)?",
         r"Ph\.?D\.?",
-        r"B\.?Sc\.?",
-        r"M\.?Sc\.?",
-        r"B\.?A\.?",
-        r"Bachelor of Science",
-        r"Master of Science",
-        r"Bachelor of Arts",
-        r"Master of Arts",
-        r"Artificial Intelligence Student",
-        r"Information Technology Engineering"
+        r"B\.?Sc\.?", r"M\.?Sc\.?", r"B\.?A\.?", r"M\.?A\.?",
+        # عربي
+        r"بكالوريوس",
+        r"ماجستير",
+        r"دكتوراه",
+        r"دبلوما?",
+        r"ليسانس",
+        r"خريجة؟\s+[أ-ي\s]+"
     ]
     
     found_degrees = set()
@@ -78,46 +42,62 @@ def extract_degrees(text: str) -> list:
             
     return list(found_degrees)
 
-def extract_resume_entities(text: str) -> dict:
+def extract_resume_entities(text: str, dynamic_skills: list = None) -> dict:
     """
-    استخراج المهارات والكيانات من النص الخام للسيرة الذاتية 
-    باستخدام spaCy و EntityRuler وقواميس المهارات الديناميكية.
+    استخراج الكيانات والمهارات ديناميكياً لجميع التخصصات والمجالات (عربي وإنجليزي) 
+    دون الاعتماد على أي قوائم ثابتة أو كلمات مخصصة.
     """
-    # تحميل نموذج اللغة الإنجليزية الأساسي في spaCy
+    # تحميل نموذج spaCy (نستخدم النموذج القياسي ويمكن توسعته)
     try:
         nlp = spacy.load("en_core_web_sm")
     except OSError:
         os.system("python -m spacy download en_core_web_sm")
         nlp = spacy.load("en_core_web_sm")
 
-    # إضافة مخصص الكيانات (EntityRuler) لاستخراج المهارات التقنية بدقة
-    if "entity_ruler" not in nlp.pipe_names:
-        ruler = nlp.add_pipe("entity_ruler", before="ner")
-        
-        # تحميل المهارات من المجلد ديناميكياً
-        technical_skills = load_skills_from_directory()
-        
-        # تجهيز الأنماط (Patterns) لقاعدة الاستخراج
-        patterns = [{"label": "SKILL", "pattern": skill} for skill in technical_skills]
-        try:
-            ruler.add_patterns(patterns)
-        except Exception:
-            pass # لتجنب التكرار في الأنماط إذا تم استدعاء الدالة أكثر من مرة
-
-    # معالجة النص عبر محرك spaCy
-    doc = nlp(text)
+    # معالجة النص وتطبيعه
+    clean_full_text = normalize_text(text)
+    doc = nlp(clean_full_text)
 
     extracted_skills = set()
     extracted_orgs = set()
 
-    # المرور على الكيانات المكتشفة في النص عبر spaCy
+    # 1. استخراج المنظمات والجهات (شركات، جامعات...) من الكيانات المسماة
     for ent in doc.ents:
-        if ent.label_ == "SKILL":
-            extracted_skills.add(ent.text)
-        elif ent.label_ == "ORG":
+        if ent.label_ in ["ORG", "GPE"]:
             extracted_orgs.add(ent.text)
 
-    # استخراج الدرجات العلمية عبر دالة البحث المحسنة
+    # 2. الاستخراج الديناميكي للمهارات بناءً على متطلبات الوظيفة المُدخلة من الـ HR
+    text_lower = clean_full_text.lower()
+    
+    if dynamic_skills:
+        for req in dynamic_skills:
+            # تقسيم المتطلبات إن وجدت بفواصل عربية أو إنجليزية
+            sub_reqs = req.replace("،", ",").split(",")
+            for sub_req in sub_reqs:
+                clean_req = sub_req.strip().lower()
+                if not clean_req:
+                    continue
+                
+                # التحقق هل المتطلب موجود كجملة أو كلمات مفتاحية داخل السيرة الذاتية
+                # يدعم أي تخصص (إدارة أعمال، محاسبة، برمجيات، تسويق...)
+                keywords = [kw for kw in clean_req.split() if len(kw) > 2]
+                
+                if clean_req in text_lower:
+                    extracted_skills.add(sub_req.strip())
+                elif keywords:
+                    # إذا وجدت معظم الكلمات المفتاحية للمتطلب في النص
+                    matches = sum(1 for kw in keywords if kw in text_lower)
+                    if matches >= len(keywords) / 2:
+                        extracted_skills.add(sub_req.strip())
+    
+    # 3. إذا لم تُمرر متطلبات محددة، يستخرج النظام المصطلحات والعبارات البارزة تلقائياً (Noun Chunks)
+    if not extracted_skills:
+        for chunk in doc.noun_chunks:
+            term = chunk.text.strip()
+            if len(term) > 3 and not term.isdigit():
+                extracted_skills.add(term)
+
+    # استخراج المؤهلات والدرجات العلمية
     extracted_degrees = extract_degrees(text)
 
     return {
@@ -125,14 +105,3 @@ def extract_resume_entities(text: str) -> dict:
         "organizations": list(extracted_orgs),
         "degrees": extracted_degrees
     }
-
-# مثال تجريبي للاختبار المباشر
-if __name__ == "__main__":
-    sample_text = """
-    Azhar Raji - Artificial Intelligence Student at Al-Nasser University.
-    Holds a Bachelor of Science in Artificial Intelligence. 
-    Experienced in Python, Pandas, Flask, Docker, and Machine Learning.
-    """
-    result = extract_resume_entities(sample_text)
-    print("النتائج المستخرجة بعد التحسين:")
-    print(json.dumps(result, indent=4, ensure_ascii=False))

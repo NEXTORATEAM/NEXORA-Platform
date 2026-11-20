@@ -22,20 +22,20 @@ class ResumeIngestionManager:
         """
         معالجة ملف حقيقي (PDF/DOCX) وتخزينه في قاعدة البيانات المتجهية.
         """
-        print(f"جاري معالجة السيرة الذاتية للملف: {file_path}...")
+        print(f"Processing resume:  {file_path}...")
         
         # 1. تشغيل الـ Pipeline واستخراج البيانات والنص الخام
         result = process_resume(file_path)
         
         if not result.get("success", False):
-            print("فشل في معالجة واستخراج بيانات السيرة الذاتية.")
+            print("Failed to process and extract data from the resume.")
             return False
 
         extracted_data = result.get("extracted_data", {})
         full_text = extracted_data.get("full_text", "")
         
         if not full_text:
-            print("النص المستخرج فارغ.")
+            print("Extracted text is empty.")
             return False
 
         # 2. تجهيز البيانات الوصفية (Metadata) مع المهارات المستخرجة
@@ -54,7 +54,7 @@ class ResumeIngestionManager:
         )
 
         if success:
-            print(f"تم تخزين السيرة الذاتية ({resume_id}) بنجاح في ChromaDB!")
+            print(f"({resume_id}) Successfully stored in ChromaDB!")
         return success
 
 # تجربة عملية للاختبار المباشر
@@ -67,4 +67,4 @@ if __name__ == "__main__":
     if os.path.exists(sample_path):
         manager.ingest_single_resume(sample_path, "res_001", "Azhar Al-Harwi")
     else:
-        print(f"تنبيه: مسار الملف غير موجود تأكد من المسار: {sample_path}")
+        print(f"Alert: File path does not exist. Please check the path: {sample_path}")

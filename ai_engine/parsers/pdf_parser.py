@@ -7,7 +7,7 @@ def extract_text_from_pdf(file_path: str) -> dict:
     باستخدام مكتبة pdfplumber مع فحص جودة الاستخراج.
     """
     if not os.path.exists(file_path):
-        return {"success": False, "error": "الملف غير موجود في المسار المحدد."}
+        return {"success": False, "error": "The file does not exist at the specified path."}
     
     extracted_text = ""
     pages_count = 0
@@ -36,7 +36,7 @@ def extract_text_from_pdf(file_path: str) -> dict:
     except Exception as e:
         return {
             "success": False,
-            "error": f"حدث خطأ أثناء قراءة ملف الـ PDF: {str(e)}"
+            "error": f"Error occurred while reading the PDF file: {str(e)}"
         }
 
 # مثال تجريبي للاختبار المباشر
