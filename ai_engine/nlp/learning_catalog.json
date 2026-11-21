@@ -1,0 +1,137 @@
+{
+  "python": {
+    "course_title": "مسار برمجة Python الشامل وتحليل البيانات (Complete Python & Data Science Bootcamp)",
+    "search_query": "Python for Data Science and Machine Learning full course",
+    "focus_area": "إتقان أساسيات البرمجة، هياكل البيانات، ومكتبات التحليل Pandas و NumPy"
+  },
+  "sql": {
+    "course_title": "تصميم وإدارة قواعد البيانات العلائقية المتقدمة (Advanced SQL & Database Management)",
+    "search_query": "Advanced SQL querying PostgreSQL SQL Server full course",
+    "focus_area": "كتابة الاستعلامات المعقدة، الربط بين الجداول، وتحسين أداء قواعد البيانات"
+  },
+  "قواعد البيانات": {
+    "course_title": "تصميم وإدارة قواعد البيانات العلائقية المتقدمة (Advanced SQL & Database Management)",
+    "search_query": "أساسيات قواعد البيانات ولغة SQL للمبتدئين والمحترفين",
+    "focus_area": "تصميم الجداول، العلاقات، والاستعلامات التحليلية باستخدام SQL"
+  },
+  "power bi": {
+    "course_title": "تصميم لوحات المؤشرات التفاعلية وذكاء الأعمال (Microsoft Power BI Data Analyst)",
+    "search_query": "Microsoft Power BI PL-300 full course dashboard design",
+    "focus_area": "نمذجة البيانات، كتابة معادلات DAX، وبناء تقارير بصرية تفاعلية"
+  },
+  "excel": {
+    "course_title": "تحليل البيانات المتقدم والجداول المحورية (Advanced Microsoft Excel for Analytics)",
+    "search_query": "Advanced Excel Pivot Tables Power Query XLOOKUP course",
+    "focus_area": "تنظيف البيانات باستخدام Power Query، الدوال المتقدمة، ولوحات المتابعة"
+  },
+  "advanced excel": {
+    "course_title": "تحليل البيانات المتقدم والجداول المحورية (Advanced Microsoft Excel for Analytics)",
+    "search_query": "Advanced Excel Pivot Tables Power Query XLOOKUP course",
+    "focus_area": "تنظيف البيانات باستخدام Power Query، الدوال المتقدمة، ولوحات المتابعة"
+  },
+  "machine learning": {
+    "course_title": "تطبيقات تعلم الآلة وبناء النماذج التنبؤية (Machine Learning Specialization)",
+    "search_query": "Machine Learning with Scikit-Learn full practical course",
+    "focus_area": "خوارزميات التصنيف والانحدار، تقييم النماذج، وهندسة الميزات"
+  },
+  "تعلم الاله": {
+    "course_title": "تطبيقات تعلم الآلة وبناء النماذج التنبؤية (Machine Learning Specialization)",
+    "search_query": "دورة تعلم الآلة وتطبيقات الذكاء الاصطناعي باستخدام بايثون",
+    "focus_area": "بناء وتدريب نماذج التنبؤ والتصنيف وتقييم دقتها عملياً"
+  },
+  "nlp": {
+    "course_title": "معالجة اللغات الطبيعية وبناء النماذج اللغوية (Natural Language Processing with spaCy & Transformers)",
+    "search_query": "NLP with spaCy and HuggingFace Transformers course",
+    "focus_area": "استخراج الكيانات (NER)، التضمين الدلالي (Embeddings)، والبحث المتجهي"
+  },
+  "fastapi": {
+    "course_title": "تطوير واجهات برمجة التطبيقات عالية الأداء (Modern REST APIs with FastAPI)",
+    "search_query": "FastAPI Python full course REST API deployment",
+    "focus_area": "بناء نقاط النهاية غير المتزامنة، التحقق من البيانات، وربط نماذج الذكاء الاصطناعي"
+  },
+  "react": {
+    "course_title": "تطوير تطبيقات الويب التفاعلية الحديثة (Modern Frontend Development with React)",
+    "search_query": "React JS full course hooks state management TailwindCSS",
+    "focus_area": "بناء المكونات التفاعلية، إدارة الحالة، وربط الواجهات مع REST APIs"
+  },
+  "it support": {
+    "course_title": "شهادة الدعم الفني وتقنية المعلومات الاحترافية (Google IT Support Professional Certificate)",
+    "search_query": "Google IT Support troubleshooting networking system administration",
+    "focus_area": "تشخيص أعطال الأجهزة والبرمجيات، إدارة أنظمة التشغيل، وخدمة المستفيدين"
+  },
+  "دعم فني": {
+    "course_title": "شهادة الدعم الفني وتقنية المعلومات الاحترافية (IT Support & Helpdesk Fundamentals)",
+    "search_query": "دورة الدعم الفني وصيانة الحاسوب والشبكات",
+    "focus_area": "حل المشكلات التقنية، صيانة الأنظمة، وتهيئة بيئات العمل"
+  },
+  "networking": {
+    "course_title": "أساسيات الشبكات وبروتوكولات الاتصال (CompTIA Network+ / Cisco CCNA)",
+    "search_query": "CompTIA Network+ CCNA networking fundamentals full course",
+    "focus_area": "إعداد الشبكات المحلية، عنونة IP، وأمن الاتصالات"
+  },
+  "erp": {
+    "course_title": "إدارة أنظمة تخطيط موارد المؤسسات (Enterprise Resource Planning - ERP Systems)",
+    "search_query": "ERP systems implementation business process management course",
+    "focus_area": "أتمتة العمليات المالية والإدارية والمخزنية داخل المؤسسات"
+  },
+  "onyx": {
+    "course_title": "التأهيل التطبيقي لنظام الأونكس برو المحاسبي والإداري (Onyx Pro ERP Specialist)",
+    "search_query": "شرح نظام الأونكس برو المحاسبي والمخزني يمن سوفت",
+    "focus_area": "إدارة القيود المحاسبية، الفواتير، المخازن، والتقارير المالية على نظام الأونكس"
+  },
+  "اونكس برو": {
+    "course_title": "التأهيل التطبيقي لنظام الأونكس برو المحاسبي والإداري (Onyx Pro ERP Specialist)",
+    "search_query": "شرح نظام الأونكس برو المحاسبي والمخزني يمن سوفت",
+    "focus_area": "إدارة القيود المحاسبية، الفواتير، المخازن، والتقارير المالية على نظام الأونكس"
+  },
+  "financial accounting": {
+    "course_title": "مبادئ المحاسبة المالية وإعداد القوائم الختامية (Financial Accounting Fundamentals)",
+    "search_query": "Financial Accounting full course balance sheet income statement",
+    "focus_area": "تسجيل القيود اليومية، المراجعة المالية، وإعداد التقارير المحاسبية"
+  },
+  "محاسبه ماليه": {
+    "course_title": "مبادئ المحاسبة المالية وإعداد القوائم الختامية (Financial Accounting Fundamentals)",
+    "search_query": "دورة المحاسبة المالية من الصفر وإعداد القوائم المالية",
+    "focus_area": "الدورة المحاسبية، التسويات الجردية، وتحليل التقارير المالية"
+  },
+  "crm": {
+    "course_title": "إدارة علاقات العملاء واستراتيجيات الاحتفاظ بالعملاء (CRM & Client Relationship Management)",
+    "search_query": "Customer Relationship Management CRM strategy and tools course",
+    "focus_area": "تتبع رحلة العميل، تحليل بيانات المبيعات، وتحسين تجربة العملاء"
+  },
+  "marketing": {
+    "course_title": "أساسيات التسويق الحديث وبناء استراتيجيات السوق (Principles of Modern Marketing)",
+    "search_query": "Marketing strategy market research branding full course",
+    "focus_area": "تحليل السوق، استهداف الجمهور، وتخطيط الحملات التسويقية"
+  },
+  "تسويق": {
+    "course_title": "أساسيات التسويق الحديث وبناء استراتيجيات السوق (Principles of Modern Marketing)",
+    "search_query": "أساسيات التسويق وبناء الخطط التسويقية",
+    "focus_area": "دراسة سلوك المستهلك، المزيج التسويقي، وبناء الهوية التجارية"
+  },
+  "تسويق طبي": {
+    "course_title": "البرنامج المتخصص في التسويق الدوائي والدعم العلمي للأطباء (Pharmaceutical & Medical Marketing)",
+    "search_query": "مهارات المندوب الطبي والتسويق الدوائي الفعال",
+    "focus_area": "مهارات العرض العلمي للأدوية، التفاوض البيعي، وإدارة المناطق البيعية"
+  },
+  "digital marketing": {
+    "course_title": "احتراف التسويق الرقمي وإدارة الحملات الإعلانية (Digital Marketing & Growth Strategy)",
+    "search_query": "Digital Marketing SEO Social Media Ads full course",
+    "focus_area": "تحسين محركات البحث (SEO)، إدارة منصات التواصل، وتحليل أداء الإعلانات"
+  },
+  "تسويق رقمي": {
+    "course_title": "احتراف التسويق الرقمي وإدارة الحملات الإعلانية (Digital Marketing & Growth Strategy)",
+    "search_query": "دورة التسويق الرقمي وإدارة الحملات الممولة",
+    "focus_area": "صناعة المحتوى التسويقي، إدارة المنصات، وتحليل عائد الاستثمار الإعلاني"
+  },
+  "human resources": {
+    "course_title": "إدارة الموارد البشرية الحديثة واستقطاب الكفاءات (Modern HR & Talent Acquisition)",
+    "search_query": "Human Resources Management recruitment performance appraisal course",
+    "focus_area": "تخطيط القوى العاملة، إجراء المقابلات، وتقييم الأداء الوظيفي"
+  },
+  "الموارد البشريه": {
+    "course_title": "إدارة الموارد البشرية الحديثة واستقطاب الكفاءات (Modern HR & Talent Acquisition)",
+    "search_query": "دبلوم إدارة الموارد البشرية واستقطاب المواهب",
+    "focus_area": "فرز المرشحين، تطوير السياسات الإدارية، وبناء خطط التدريب"
+  }
+}

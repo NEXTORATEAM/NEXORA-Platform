@@ -1,38 +1,68 @@
 import re
 
+
 def clean_text(text: str) -> str:
     """
-    تنظيف النص الخام المستخرج من السيرة الذاتية (PDF أو DOCX) 
-    من المسافات الزائدة والرموز العشوائية غير الضرورية قبل تمريره لمكتبة spaCy.
+    تنظيف النص مع الحفاظ على ترتيب الأسطر
+    والعناوين الموجودة في السيرة الذاتية.
     """
+
     if not text:
         return ""
-    
-    # إزالة الأسطر الفارغة الزائدة والمسافات المتراكمة
-    text = re.sub(r'\s+', ' ', text)
-    cleaned = text.strip()
-    return cleaned
+
+    # توحيد أنواع فواصل الأسطر
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # إزالة المسافات الزائدة داخل كل سطر
+    lines = []
+
+    for line in text.split("\n"):
+        line = re.sub(r'[ \t]+', ' ', line).strip()
+
+        if line:
+            lines.append(line)
+
+    # الاحتفاظ بفواصل الأسطر
+    cleaned = "\n".join(lines)
+
+    return cleaned.strip()
+
 
 def extract_contact_info(text: str) -> dict:
     """
-    استخراج البريد الإلكتروني ورقم الهاتف من النص الخام باستخدام Regex.
+    استخراج البريد الإلكتروني ورقم الهاتف.
     """
+
     if not text:
-        return {"email": None, "phone": None}
-    
-    # 1. استخراج البريد الإلكتروني (Email Regex)
-    email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        return {
+            "email": None,
+            "phone": None
+        }
+
+    email_pattern = (
+        r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+    )
+
     emails = re.findall(email_pattern, text)
+
     extracted_email = emails[0] if emails else None
-    
-    # 2. استخراج رقم الهاتف (Phone Regex - يدعم الأشكال الدولية والمحلية المختلفة)
-    phone_pattern = r'(?:\+?\d{1,3}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}[-.\s]?\d{3,4}'
+
+    phone_pattern = (
+        r'(?:\+?\d{1,3}[-.\s]?)?'
+        r'\(?\d{2,4}\)?[-.\s]?'
+        r'\d{3,4}[-.\s]?\d{3,4}'
+    )
+
     phones = re.findall(phone_pattern, text)
-    
-    # تصفية الأرقام لتجنب المطابقات الخاطئة القصيرة جداً
-    valid_phones = [p.strip() for p in phones if len(re.sub(r'\D', '', p)) >= 7]
+
+    valid_phones = [
+        phone.strip()
+        for phone in phones
+        if len(re.sub(r'\D', '', phone)) >= 7
+    ]
+
     extracted_phone = valid_phones[0] if valid_phones else None
-    
+
     return {
         "email": extracted_email,
         "phone": extracted_phone

@@ -1,107 +1,491 @@
-import os
-import json
 import re
-import spacy
+
+
+# ==================================================
+# 1. Resume Section Headers
+# ==================================================
+
+SECTION_HEADERS = {
+    "skills": [
+        "skills",
+        "technical skills",
+        "core skills",
+        "key skills",
+        "areas of expertise",
+        "competencies",
+        "professional skills",
+        "مهارات",
+        "المهارات",
+        "المهارات التقنية",
+        "المهارات الشخصية"
+    ],
+
+    "education": [
+        "education",
+        "academic background",
+        "educational background",
+        "qualifications",
+        "academic qualifications",
+        "التعليم",
+        "المؤهلات",
+        "المؤهلات العلمية",
+        "المؤهل العلمي"
+    ],
+
+    "experience": [
+        "experience",
+        "work experience",
+        "professional experience",
+        "employment history",
+        "career history",
+        "work history",
+        "الخبرات",
+        "الخبرة",
+        "الخبرة العملية",
+        "الخبرات المهنية",
+        "الخبرات العملية"
+    ],
+
+    "projects": [
+        "projects",
+        "academic projects",
+        "personal projects",
+        "professional projects",
+        "المشاريع",
+        "المشاريع الأكاديمية",
+        "المشاريع الشخصية"
+    ],
+
+    "certifications": [
+        "certifications",
+        "certificates",
+        "courses",
+        "training",
+        "الشهادات",
+        "الدورات",
+        "الدورات التدريبية"
+    ]
+}
+
+
+# ==================================================
+# 2. Text Normalization
+# ==================================================
 
 def normalize_text(text: str) -> str:
-    """
-    تطبيع النصوص العامة (عربي وإنجليزي) لتوحيد المسافات والأحرف وإزالة التشكيل.
-    """
+
     if not text:
         return ""
-    # إزالة تشكيل الحروف العربية
+
     text = re.sub(r'[\u064b-\u0652]', '', text)
-    # توحيد المسافات الزائدة
-    text = re.sub(r'\s+', ' ', text)
-    return text.strip()
+
+    lines = []
+
+    for line in text.splitlines():
+
+        line = re.sub(r'[ \t]+', ' ', line)
+        line = line.strip()
+
+        if line:
+            lines.append(line)
+
+    return "\n".join(lines)
+
+
+def normalize_heading(line: str) -> str:
+
+    line = line.lower().strip()
+
+    line = re.sub(
+        r'^[\s•●▪◦\-*]+',
+        '',
+        line
+    )
+
+    line = re.sub(
+        r'[:：\-–—]+$',
+        '',
+        line
+    )
+
+    line = re.sub(
+        r'[^a-z0-9\u0600-\u06ff\s]',
+        '',
+        line
+    )
+
+    return re.sub(r'\s+', ' ', line).strip()
+
+
+# ==================================================
+# 3. Section Detection
+# ==================================================
+
+def identify_section(line: str):
+
+    heading = normalize_heading(line)
+
+    for section_name, headings in SECTION_HEADERS.items():
+
+        for header in headings:
+
+            if heading == normalize_heading(header):
+                return section_name
+
+    return None
+
+
+def extract_sections(text: str) -> dict:
+
+    sections = {
+        "skills": [],
+        "education": [],
+        "experience": [],
+        "projects": [],
+        "certifications": [],
+        "other": []
+    }
+
+    current_section = "other"
+
+    for line in text.splitlines():
+
+        line = line.strip()
+
+        if not line:
+            continue
+
+        detected_section = identify_section(line)
+
+        if detected_section:
+
+            current_section = detected_section
+            continue
+
+        sections[current_section].append(line)
+
+    return sections
+
+
+# ==================================================
+# 4. Full Name Extraction
+# ==================================================
+
+def extract_full_name(text: str):
+
+    lines = [
+        line.strip()
+        for line in text.splitlines()
+        if line.strip()
+    ]
+
+    ignored_exact = {
+        "resume",
+        "curriculum vitae",
+        "cv",
+        "personal information",
+        "contact",
+        "contact information",
+        "profile",
+        "professional profile",
+        "about me",
+        "personal details",
+        "السيرة الذاتية",
+        "المعلومات الشخصية",
+        "معلومات التواصل",
+        "الملف الشخصي"
+    }
+
+    ignored_phrases = [
+        "personal information",
+        "contact information",
+        "curriculum vitae",
+        "professional summary",
+        "career objective"
+    ]
+
+    email_pattern = r'\S+@\S+\.\S+'
+    url_pattern = r'(https?://|www\.)'
+
+    for line in lines[:10]:
+
+        normalized = normalize_heading(line)
+
+        if normalized in ignored_exact:
+            continue
+
+        if any(
+            phrase in normalized
+            for phrase in ignored_phrases
+        ):
+            continue
+
+        if re.search(email_pattern, line, re.IGNORECASE):
+            continue
+
+        if re.search(url_pattern, line, re.IGNORECASE):
+            continue
+
+        if re.search(r'\d', line):
+            continue
+
+        if len(line) > 45:
+            continue
+
+        words = line.split()
+
+        if not 2 <= len(words) <= 4:
+            continue
+
+        if re.search(
+            r'[@|•●▪◦:؛]',
+            line
+        ):
+            continue
+
+        if not re.fullmatch(
+            r"[A-Za-z\u0600-\u06ff\s.'-]+",
+            line
+        ):
+            continue
+
+        ignored_titles = {
+            "software engineer",
+            "data scientist",
+            "web developer",
+            "student",
+            "engineer",
+            "developer",
+            "graphic designer",
+            "project manager"
+        }
+
+        if normalized in ignored_titles:
+            continue
+
+        return line
+
+    return None
+
+
+# ==================================================
+# 5. Education Extraction
+# ==================================================
 
 def extract_degrees(text: str) -> list:
-    """
-    استخراج الدرجات العلمية والمؤهلات بمختلف التخصصات (إدارة أعمال، هندسة، تقنية، طب...).
-    """
-    degree_patterns = [
-        # إنجليزي
-        r"Bachelor(?:\s+of\s+[A-Za-z\s]+)?",
-        r"Master(?:\s+of\s+[A-Za-z\s]+)?",
-        r"Ph\.?D\.?",
-        r"B\.?Sc\.?", r"M\.?Sc\.?", r"B\.?A\.?", r"M\.?A\.?",
-        # عربي
-        r"بكالوريوس",
-        r"ماجستير",
-        r"دكتوراه",
-        r"دبلوما?",
-        r"ليسانس",
-        r"خريجة؟\s+[أ-ي\s]+"
+
+    patterns = [
+        r'\bBachelor(?:\s+of\s+[A-Za-z]+(?:\s+[A-Za-z]+){0,3})?',
+        r'\bMaster(?:\s+of\s+[A-Za-z]+(?:\s+[A-Za-z]+){0,3})?',
+        r'\bPh\.?\s*D\.?',
+        r'\bDoctorate\b',
+        r'\bDiploma(?:\s+in\s+[A-Za-z]+(?:\s+[A-Za-z]+){0,3})?',
+        r'\bAssociate(?:\s+Degree)?\b',
+
+        r'بكالوريوس(?:\s+في\s+[\u0600-\u06ff]+(?:\s+[\u0600-\u06ff]+){0,3})?',
+        r'ماجستير(?:\s+في\s+[\u0600-\u06ff]+(?:\s+[\u0600-\u06ff]+){0,3})?',
+        r'دكتوراه(?:\s+في\s+[\u0600-\u06ff]+(?:\s+[\u0600-\u06ff]+){0,3})?',
+        r'دبلوم(?:\s+في\s+[\u0600-\u06ff]+(?:\s+[\u0600-\u06ff]+){0,3})?',
+        r'ليسانس'
     ]
-    
-    found_degrees = set()
-    for pattern in degree_patterns:
-        matches = re.findall(pattern, text, re.IGNORECASE)
-        for m in matches:
-            found_degrees.add(m.strip())
-            
-    return list(found_degrees)
 
-def extract_resume_entities(text: str, dynamic_skills: list = None) -> dict:
-    """
-    استخراج الكيانات والمهارات ديناميكياً لجميع التخصصات والمجالات (عربي وإنجليزي) 
-    دون الاعتماد على أي قوائم ثابتة أو كلمات مخصصة.
-    """
-    # تحميل نموذج spaCy (نستخدم النموذج القياسي ويمكن توسعته)
-    try:
-        nlp = spacy.load("en_core_web_sm")
-    except OSError:
-        os.system("python -m spacy download en_core_web_sm")
-        nlp = spacy.load("en_core_web_sm")
+    found = set()
 
-    # معالجة النص وتطبيعه
-    clean_full_text = normalize_text(text)
-    doc = nlp(clean_full_text)
+    for pattern in patterns:
 
-    extracted_skills = set()
-    extracted_orgs = set()
+        matches = re.findall(
+            pattern,
+            text,
+            flags=re.IGNORECASE
+        )
 
-    # 1. استخراج المنظمات والجهات (شركات، جامعات...) من الكيانات المسماة
-    for ent in doc.ents:
-        if ent.label_ in ["ORG", "GPE"]:
-            extracted_orgs.add(ent.text)
+        for match in matches:
 
-    # 2. الاستخراج الديناميكي للمهارات بناءً على متطلبات الوظيفة المُدخلة من الـ HR
-    text_lower = clean_full_text.lower()
-    
+            value = re.sub(
+                r'\s+',
+                ' ',
+                match
+            ).strip()
+
+            if len(value) >= 4:
+                found.add(value)
+
+    return sorted(
+        found,
+        key=str.lower
+    )
+
+
+# ==================================================
+# 6. Skills Extraction
+# ==================================================
+
+def extract_skills(
+    sections: dict,
+    dynamic_skills: list = None
+) -> list:
+
+    extracted = set()
+
+    skills_lines = sections.get("skills", [])
+
+    for line in skills_lines:
+
+        line = re.sub(
+            r'^[\s•●▪◦\-*]+',
+            '',
+            line
+        ).strip()
+
+        if not line:
+            continue
+
+        items = re.split(
+            r'[,،;؛|•●▪◦]',
+            line
+        )
+
+        for item in items:
+
+            skill = item.strip()
+
+            if (
+                2 <= len(skill) <= 45
+                and len(skill.split()) <= 5
+                and not skill.isdigit()
+            ):
+
+                extracted.add(skill)
+
+    # Match job requirements only when supplied
     if dynamic_skills:
-        for req in dynamic_skills:
-            # تقسيم المتطلبات إن وجدت بفواصل عربية أو إنجليزية
-            sub_reqs = req.replace("،", ",").split(",")
-            for sub_req in sub_reqs:
-                clean_req = sub_req.strip().lower()
-                if not clean_req:
-                    continue
-                
-                # التحقق هل المتطلب موجود كجملة أو كلمات مفتاحية داخل السيرة الذاتية
-                # يدعم أي تخصص (إدارة أعمال، محاسبة، برمجيات، تسويق...)
-                keywords = [kw for kw in clean_req.split() if len(kw) > 2]
-                
-                if clean_req in text_lower:
-                    extracted_skills.add(sub_req.strip())
-                elif keywords:
-                    # إذا وجدت معظم الكلمات المفتاحية للمتطلب في النص
-                    matches = sum(1 for kw in keywords if kw in text_lower)
-                    if matches >= len(keywords) / 2:
-                        extracted_skills.add(sub_req.strip())
-    
-    # 3. إذا لم تُمرر متطلبات محددة، يستخرج النظام المصطلحات والعبارات البارزة تلقائياً (Noun Chunks)
-    if not extracted_skills:
-        for chunk in doc.noun_chunks:
-            term = chunk.text.strip()
-            if len(term) > 3 and not term.isdigit():
-                extracted_skills.add(term)
 
-    # استخراج المؤهلات والدرجات العلمية
-    extracted_degrees = extract_degrees(text)
+        full_text = " ".join(
+            line
+            for lines in sections.values()
+            for line in lines
+        ).lower()
+
+        for requirement in dynamic_skills:
+
+            if not isinstance(requirement, str):
+                continue
+
+            items = re.split(
+                r'[,،;؛]',
+                requirement
+            )
+
+            for item in items:
+
+                skill = item.strip()
+
+                if (
+                    skill
+                    and len(skill) <= 45
+                    and skill.lower() in full_text
+                ):
+
+                    extracted.add(skill)
+
+    return sorted(
+        extracted,
+        key=str.lower
+    )
+
+
+# ==================================================
+# 7. Organization Extraction
+# ==================================================
+
+def extract_organizations(
+    text: str,
+    sections: dict
+) -> list:
+
+    relevant_text = "\n".join(
+        sections.get("education", []) +
+        sections.get("experience", [])
+    )
+
+    if not relevant_text.strip():
+        return []
+
+    try:
+
+        import spacy
+
+        nlp = spacy.load("en_core_web_sm")
+
+        doc = nlp(relevant_text)
+
+        organizations = set()
+
+        for entity in doc.ents:
+
+            if entity.label_ != "ORG":
+                continue
+
+            name = entity.text.strip()
+
+            name = re.sub(
+                r'\s+',
+                ' ',
+                name
+            )
+
+            if len(name) < 3:
+                continue
+
+            if len(name.split()) > 6:
+                continue
+
+            organizations.add(name)
+
+        return sorted(
+            organizations,
+            key=str.lower
+        )
+
+    except (ImportError, OSError):
+
+        return []
+
+
+# ==================================================
+# 8. Main Resume Entity Extraction
+# ==================================================
+
+def extract_resume_entities(
+    text: str,
+    dynamic_skills: list = None
+) -> dict:
+
+    clean_full_text = normalize_text(text)
+
+    sections = extract_sections(clean_full_text)
+
+    full_name = extract_full_name(
+        clean_full_text
+    )
+
+    degrees = extract_degrees(
+        "\n".join(sections.get("education", []))
+    )
+
+    skills = extract_skills(
+        sections,
+        dynamic_skills
+    )
+
+    organizations = extract_organizations(
+        clean_full_text,
+        sections
+    )
 
     return {
-        "skills": list(extracted_skills),
-        "organizations": list(extracted_orgs),
-        "degrees": extracted_degrees
+        "full_name": full_name,
+        "skills": skills,
+        "organizations": organizations,
+        "degrees": degrees
     }

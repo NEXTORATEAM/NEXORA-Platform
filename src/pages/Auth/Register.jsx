@@ -6,14 +6,13 @@ import { registerUser } from '../../services/authService';
 
 export default function Register() {
   const navigate = useNavigate();
-  const [userType, setUserType] = useState('student'); // 'student' or 'recruiter'
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-  
+
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -53,8 +52,8 @@ export default function Register() {
       setErrorMessage('');
       setLoading(true);
 
-      // تحويل نوع الحساب إلى القيمة التي يفهمها Backend
-      const role = userType === 'student' ? 'candidate' : 'recruiter';
+      // حصر التسجيل العام في دور باحث عن عمل (candidate)
+      const role = 'candidate';
 
       // تجهيز البيانات وإرسال name للـ Backend
       const userData = {
@@ -67,24 +66,34 @@ export default function Register() {
       // إرسال طلب إنشاء الحساب
       const response = await registerUser(userData);
 
-      console.log('Registration successful:', response);
+      const accessToken = response?.access_token;
+      const returnedRole = response?.role;
+      const tokenType = response?.token_type || 'bearer';
 
-      // الانتقال بعد نجاح إنشاء الحساب
-      if (userType === 'student') {
-        navigate('/candidate/dashboard');
-      } else {
-        navigate('/recruiter/add-job');
+      if (!accessToken) {
+        setErrorMessage('تعذر استلام رمز الدخول من الخادم، يرجى المحاولة مرة أخرى');
+        return;
       }
 
-    } catch (error) {
-      console.error('Registration error:', error);
+      if (returnedRole !== 'candidate') {
+        setErrorMessage('صلاحية الحساب الراجعة غير صالحة للتسجيل العام');
+        return;
+      }
 
-      // معالجة الأخطاء بأمان لمنع انهيار الواجهة
-      let message = error.response?.data?.detail;
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('tokenType', tokenType);
+      localStorage.setItem('userRole', returnedRole);
+
+      // الانتقال إلى لوحة Candidate بعد التحقق وحفظ بيانات الجلسة
+      navigate('/candidate/dashboard');
+
+    } catch (error) {
+      // معالجة الأخطاء بأمان دون طباعة تفاصيل الطلب أو بيانات المستخدم الحساسة
+      let message = error?.response?.data?.detail;
       if (Array.isArray(message)) {
-        message = message.map((item) => item.msg || 'خطأ في المدخلات').join(' - ');
+        message = message.map((item) => item?.msg || 'خطأ في المدخلات').join(' - ');
       } else if (typeof message === 'object' && message !== null) {
-        message = JSON.stringify(message);
+        message = 'تعذر إكمال إنشاء الحساب، يرجى التحقق من البيانات المدخلة';
       }
 
       setErrorMessage(
@@ -102,7 +111,7 @@ export default function Register() {
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold text-brand-darker font-tajawal">إنشاء حساب جديد في NEXORA</h1>
-          <p className="text-sm text-slate-500">اختر نوع الحساب وابدأ رحلتك الذكية معنا</p>
+          <p className="text-sm text-slate-500">أنشئ حساب باحث عن عمل وابدأ رحلتك الذكية معنا</p>
         </div>
 
         {/* تنبيه الخطأ في حال وجود مشكلة */}
@@ -112,39 +121,13 @@ export default function Register() {
           </div>
         )}
 
-        {/* Role Selection Tabs */}
-        <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
-          <button
-            type="button"
-            onClick={() => setUserType('student')}
-            className={`py-2 text-sm font-medium rounded-lg transition-all ${
-              userType === 'student'
-                ? 'bg-white text-brand-darker shadow-xs'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            باحث عن عمل  
-          </button>
-          <button
-            type="button"
-            onClick={() => setUserType('recruiter')}
-            className={`py-2 text-sm font-medium rounded-lg transition-all ${
-              userType === 'recruiter'
-                ? 'bg-white text-brand-darker shadow-xs'
-                : 'text-slate-500 hover:text-slate-700'
-            }`}
-          >
-            شركة / مسؤول توظيف
-          </button>
-        </div>
-
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label={userType === 'student' ? 'الاسم الكامل' : 'اسم الشركة / المسؤول'}
+            label="الاسم الكامل"
             type="text"
             name="name"
-            placeholder={userType === 'student' ? 'أدخل اسمك الكامل' : 'أدخل اسم الشركة'}
+            placeholder="أدخل اسمك الكامل"
             value={formData.name}
             onChange={handleChange}
             required
@@ -181,7 +164,7 @@ export default function Register() {
           />
 
           <Button type="submit" variant="primary" className="w-full py-2.5" disabled={loading}>
-            {loading ? 'جاري إنشاء الحساب...' : (userType === 'student' ? 'إنشاء حساب' : 'إنشاء حساب شركة')}
+            {loading ? 'جاري إنشاء الحساب...' : 'إنشاء حساب'}
           </Button>
         </form>
 

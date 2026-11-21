@@ -1,0 +1,47 @@
+[
+  {
+    "id": "career_data_analyst",
+    "title": "محلل بيانات (Data Analyst)",
+    "skills_text": "Data Analyst تحليل البيانات Python SQL Excel Advanced Excel Power BI Tableau Pandas NumPy Data Visualization Statistical Analysis قواعد البيانات الجداول المحورية تنظيف البيانات واستخراج المؤشرات"
+  },
+  {
+    "id": "career_ai_ml_engineer",
+    "title": "مهندس ذكاء اصطناعي وتعلم آلة (AI / ML Engineer)",
+    "skills_text": "AI Machine Learning Engineer مهندس ذكاء اصطناعي Python Deep Learning NLP Natural Language Processing spaCy Transformers Sentence-Transformers TensorFlow PyTorch Scikit-learn ChromaDB معالجة اللغات الطبيعية وبناء النماذج الذكية"
+  },
+  {
+    "id": "career_software_backend",
+    "title": "مطور برمجيات وأنظمة خلفية (Backend & Software Developer)",
+    "skills_text": "Backend Software Developer مطور برمجيات Python FastAPI Django RESTful APIs PostgreSQL MySQL SQLite Docker Git Microservices تطوير واجهات برمجة التطبيقات وإدارة قواعد البيانات"
+  },
+  {
+    "id": "career_frontend_web",
+    "title": "مطور واجهات أمامية وتجربة مستخدم (Frontend & UI Developer)",
+    "skills_text": "Frontend Web Developer مطور واجهات مستخدم React JavaScript TypeScript HTML5 CSS3 TailwindCSS Responsive Design UI UX تصميم واجهات الويب التفاعلية وربط الـ APIs"
+  },
+  {
+    "id": "career_it_support",
+    "title": "أخصائي دعم فني وشبكات (IT Support & Network Specialist)",
+    "skills_text": "IT Support Technical Specialist أخصائي دعم فني وشبكات Networking Hardware Troubleshooting Windows Server Computer Maintenance System Administration صيانة الحاسوب إدارة الشبكات وحل المشكلات التقنية"
+  },
+  {
+    "id": "career_business_erp",
+    "title": "أخصائي إدارة أعمال وأنظمة مؤسسية (Business Admin & ERP Specialist)",
+    "skills_text": "Business Administration ERP Specialist أخصائي إدارة أعمال وأنظمة محاسبية Onyx Pro ERP Financial Accounting Data Entry MS Office Time Management Project Coordination نظام الأونكس برو المحاسبة المالية إدخال البيانات وتنظيم الإجراءات الإدارية"
+  },
+  {
+    "id": "career_medical_sales",
+    "title": "أخصائي تسويق ومبيعات طبية (Medical Sales & Marketing Specialist)",
+    "skills_text": "Medical Sales Representative Pharmaceutical Marketing مندوب مبيعات طبية وتسويق دوائي Pharmacy Clinical Support CRM Client Relations Negotiation Skills الدعم العلمي للأطباء إدارة العلاقات مع العملاء وتحقيق الأهداف البيعية"
+  },
+  {
+    "id": "career_digital_marketing",
+    "title": "أخصائي تسويق رقمي وتصميم (Digital Marketing & Creative Specialist)",
+    "skills_text": "Digital Marketing Graphic Design أخصائي تسويق رقمي وتصميم Social Media Management SEO Content Creation Adobe Photoshop Adobe Illustrator إدارة الحملات الإعلانية التصميم الجرافيكي وصناعة المحتوى"
+  },
+  {
+    "id": "career_hr_specialist",
+    "title": "أخصائي موارد بشرية واستقطاب كفاءات (HR & Talent Acquisition Specialist)",
+    "skills_text": "Human Resources HR Specialist أخصائي موارد بشرية Recruitment Talent Acquisition Performance Evaluation Employee Relations Organizational Development استقطاب الكفاءات فرز السير الذاتية المقابلات الشخصية وتطوير بيئة العمل"
+  }
+]
